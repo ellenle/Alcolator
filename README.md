@@ -1,0 +1,2 @@
+# Alcolator
+Alcohol calculator
