@@ -32,11 +32,14 @@
     }
 }
 - (IBAction)sliderValueDidChange:(UISlider *)sender {
-    NSLog(@"Slider value changed to %f", sender.value);
+    NSLog(@"Wine slider value changed to %f", sender.value);
     [self.beerPercentTextField resignFirstResponder];
+    self.title = [NSString stringWithFormat:@"Wine (%@)", [self calculateNumberOfGlasses]];
 }
-- (IBAction)buttonPressed:(id)sender {
-    [self.beerPercentTextField resignFirstResponder];
+
+
+//method to calculate number of glasses
+- (NSString *)calculateNumberOfGlasses {
     
     // first - calculate how much alcohol is in all of those beers
     int numberOfBeers = self.beerCountSlider.value;
@@ -65,12 +68,31 @@
         wineText = NSLocalizedString(@"glasses", "plural of glass");
     }
     
+    return [NSString stringWithFormat:NSLocalizedString(@"%.1f %@", nil), numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
+}
+
+- (IBAction)buttonPressed:(id)sender {
+    [self.beerPercentTextField resignFirstResponder];
+    
+    //calculate how much alcohol is in all of those beers
+    int numberOfBeers = self.beerCountSlider.value;
+    
+    //decide whether to use 'beer', 'wine', or their plural counterparts
+    NSString *beerText;
+    if (numberOfBeers == 1) {
+        beerText = NSLocalizedString(@"beer", @"singular beer");
+    } else {
+        beerText = NSLocalizedString(@"beers", @"plural of beer");
+    }
+    
     //generate restul text, display it on the label
-    NSString *resultTest = [NSString stringWithFormat:NSLocalizedString(@"%d %@ (with %.2f%% alcohol) contains as much alcohol as %.1f %@ of wine.", nil), numberOfBeers, beerText, [self.beerPercentTextField.text floatValue], numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
+    NSString *resultTest = [NSString stringWithFormat:NSLocalizedString(@"%d %@ (with %.2f%% alcohol) contains as much alcohol as %@ of wine.", nil), numberOfBeers, beerText, [self.beerPercentTextField.text floatValue], [self calculateNumberOfGlasses]];
     self.resultLabel.text = resultTest;
 }
+
 - (IBAction)tapGestureDidFire:(UITapGestureRecognizer *)sender {
     [self.beerPercentTextField resignFirstResponder];
 }
 
 @end
+
